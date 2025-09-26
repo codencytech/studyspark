@@ -5,19 +5,55 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StudySpark - Results</title>
 <style>
-body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 16px; min-width: 500px; max-width: 600px; max-height: 600px; overflow-y: auto; }
-.result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-#result-content { white-space: pre-wrap; line-height: 1.5; }
-#copy-btn { padding: 5px 10px; cursor: pointer; background-color: #f0f4f8; border: 1px solid #ccc; border-radius: 4px; }
-#copy-btn:hover { background-color: #e1e8f0; }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f9fafc;
+        padding: 20px;
+        margin: 0;
+    }
+    .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 20px;
+        max-width: 550px;
+        margin: auto;
+    }
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+    }
+    #result-content {
+        white-space: pre-wrap;
+        line-height: 1.6;
+        font-size: 15px;
+    }
+    #copy-btn {
+        padding: 6px 12px;
+        cursor: pointer;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        transition: background 0.2s ease;
+    }
+    #copy-btn:hover {
+        background: #1d4ed8;
+    }
 </style>
 </head>
 <body>
-<div class="result-header">
-    <h3 id="result-title">Result</h3>
-    <button id="copy-btn">Copy Text</button>
-</div>
-<div id="result-content">Loading result...</div>
-<script src="results.js"></script>
+    <div class="card">
+        <div class="result-header">
+            <h3 id="result-title">Result</h3>
+            <button id="copy-btn">Copy</button>
+        </div>
+        <div id="result-content">Loading result...</div>
+    </div>
+    <script src="results.js"></script>
 </body>
 </html>
