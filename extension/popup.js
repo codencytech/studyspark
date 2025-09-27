@@ -16,15 +16,22 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        // Send message to content script and wait for response with timeout
+        // STEP 1: Open results window immediately with placeholder
+        chrome.storage.local.set({
+          studySparkResult: { action, result: "⏳ Processing... please wait", ts: Date.now() }
+        }, () => {
+          const url = `results.html?action=${encodeURIComponent(action)}`;
+          chrome.windows.create({ url, type: "popup", width: 600, height: 600 });
+        });
+
+        // STEP 2: Start AI request
         let responded = false;
         const TIMEOUT_MS = 25000; // 25s fallback for slow AI
 
-        // Start timeout fallback
         const timeoutId = setTimeout(() => {
           if (!responded) {
-            console.warn("Popup: response timeout, opening results with a message.");
-            openResultsWithData(action, "⚠️ Request timed out. The AI may be slow. Try again.");
+            console.warn("Popup: response timeout, updating results with message.");
+            updateResults(action, "⚠️ Request timed out. The AI may be slow. Try again.");
             responded = true;
           }
         }, TIMEOUT_MS);
@@ -33,38 +40,62 @@ document.addEventListener("DOMContentLoaded", () => {
           clearTimeout(timeoutId);
           responded = true;
 
-          // If message call caused runtime.lastError (e.g. no content script injected)
           if (chrome.runtime.lastError) {
             console.error("Popup: sendMessage error:", chrome.runtime.lastError.message);
-            openResultsWithData(action, `❌ Extension error: ${chrome.runtime.lastError.message}`);
+            updateResults(action, `❌ Extension error: ${chrome.runtime.lastError.message}`);
             return;
           }
 
-          const resultData = (response && response.success) ? response.result : (response && response.error) || "❌ AI not available";
-          console.log("Popup: got response, saving result (length):", (resultData || "").length);
+          // Normalize the result into a plain string
+          let resultData;
+          if (response && response.success) {
+            resultData = response.result;
+          } else if (response && response.error) {
+            resultData = `❌ ${response.error}`;
+          } else {
+            resultData = "❌ AI not available";
+          }
 
-          // Save to storage and then open results window (include action in URL)
-          chrome.storage.local.set({ studySparkResult: { action, result: resultData, ts: Date.now() } }, () => {
-            if (chrome.runtime.lastError) {
-              console.error("Popup: storage.set error:", chrome.runtime.lastError.message);
-              // still open results with plain message
-              openResultsWithData(action, resultData);
-              return;
+          try {
+            if (typeof resultData !== "string") {
+              resultData = (typeof resultData === "object")
+                ? JSON.stringify(resultData, null, 2)
+                : String(resultData);
             }
-            // Open results window — action passed as query param for immediate title
-            const url = `results.html?action=${encodeURIComponent(action)}`;
-            chrome.windows.create({ url, type: "popup", width: 600, height: 600 });
-          });
+          } catch (e) {
+            resultData = String(resultData || "");
+          }
+
+          console.log("Popup: got response, saving result (chars):", resultData.length);
+
+          // STEP 3: Update results with the final AI output
+          updateResults(action, resultData);
         });
       });
     });
   });
 });
 
-function openResultsWithData(action, result) {
-  // fallback: ensure storage has something then open results
-  chrome.storage.local.set({ studySparkResult: { action, result, ts: Date.now() } }, () => {
-    const url = `results.html?action=${encodeURIComponent(action)}`;
-    chrome.windows.create({ url, type: "popup", width: 600, height: 600 });
+// helper to update results in storage and notify results window
+function updateResults(action, result) {
+  const resultData = (typeof result === "string")
+    ? result
+    : (JSON.stringify(result, null, 2) || String(result));
+
+  chrome.storage.local.set({
+    studySparkResult: { action, result: resultData, ts: Date.now() }
+  }, () => {
+    try {
+      chrome.runtime.sendMessage({ type: "RESULT_AVAILABLE", action, result: resultData });
+    } catch (e) {
+      // ignore
+    }
   });
+}
+
+// fallback: opens a new window with given result
+function openResultsWithData(action, result) {
+  updateResults(action, result);
+  const url = `results.html?action=${encodeURIComponent(action)}`;
+  chrome.windows.create({ url, type: "popup", width: 600, height: 600 });
 }
