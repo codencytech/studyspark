@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // STEP 2: Start AI request
         let responded = false;
-        const TIMEOUT_MS = 25000;
+        const TIMEOUT_MS = 30000;
 
         const timeoutId = setTimeout(() => {
           if (!responded) {

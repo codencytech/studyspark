@@ -1,4 +1,4 @@
-// content-script.js (fixed single-chunk duplicates)
+// content-script.js (FIXED - no duplicates)
 console.log("StudySpark content-script loaded.");
 
 // ---- Helpers --------------------------------------------------------
@@ -56,8 +56,14 @@ function chunkText(str, size = 3000) {
   return chunks;
 }
 
-// format final response for display
 function formatFinalResponse(action, text) {
+  // If text already has our header, return as-is
+  if (text.includes('## 📌 Summary') || text.includes('## ✏️ Simplified Explanation') || 
+      text.includes('## 🌍 Translation') || text.includes('## ✅ Proofread') || 
+      text.includes('## 🎴 Flashcards') || text.includes('## 🧩 Generated Template')) {
+    return text;
+  }
+  
   switch (action) {
     case "SUMMARIZE": return `## 📌 Summary\n\n${text.trim()}`;
     case "SIMPLIFY": return `## ✏️ Simplified Explanation\n\n${text.trim()}`;
@@ -69,13 +75,11 @@ function formatFinalResponse(action, text) {
   }
 }
 
-// helper to safely call session.prompt with one retry on transient error
 async function safePrompt(session, promptText) {
   try {
     return await session.prompt(promptText);
   } catch (err) {
     console.warn("Prompt failed, retrying once...", err);
-    // small delay then retry once
     await new Promise(r => setTimeout(r, 600));
     try {
       return await session.prompt(promptText);
@@ -86,295 +90,164 @@ async function safePrompt(session, promptText) {
   }
 }
 
-// ---- SMART DUPLICATE REMOVAL ----
-function removeDuplicateContent(text) {
-  if (!text) return text;
+// ---- SIMPLE PROCESSING - NO DUPLICATES ----
+async function processSingleChunk(session, action, chunk, targetLang) {
+  console.log("🔄 Processing single chunk...");
   
-  console.log("🔄 Removing duplicates from text length:", text.length);
-  
-  // Split by lines and remove empty lines
-  const lines = text.split('\n').filter(line => line.trim().length > 0);
-  const uniqueLines = [];
-  const seenLines = new Set();
-  
-  for (const line of lines) {
-    const cleanLine = line.trim();
-    const lineFingerprint = createLineFingerprint(cleanLine);
-    
-    // Check if this line is a duplicate of any previous line
-    if (!isLineDuplicate(cleanLine, lineFingerprint, seenLines)) {
-      uniqueLines.push(line);
-      seenLines.add(lineFingerprint);
-    }
-  }
-  
-  // Also check for duplicate sections (when entire content repeats)
-  const result = removeDuplicateSections(uniqueLines.join('\n'));
-  
-  console.log("🎯 Final text length after cleaning:", result.length);
-  return result;
-}
+  const prompts = {
+    SUMMARIZE: `Create a concise summary with these requirements:
+- Start with a clear title
+- Use bullet points for key information
+- Maximum 5-6 main points
+- No duplicate content
+- Clean, readable format
 
-function createLineFingerprint(line) {
-  return line.toLowerCase()
-    .replace(/[^\w\s]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+Text to summarize: ${chunk}`,
 
-function isLineDuplicate(line, fingerprint, seenLines) {
-  // Exact match
-  if (seenLines.has(fingerprint)) return true;
-  
-  // Check for similar lines (80% similarity)
-  for (const existingFingerprint of seenLines) {
-    const similarity = calculateLineSimilarity(fingerprint, existingFingerprint);
-    if (similarity > 0.8) return true;
-  }
-  
-  return false;
-}
-
-function calculateLineSimilarity(str1, str2) {
-  if (!str1 || !str2) return 0;
-  
-  const words1 = str1.split(' ');
-  const words2 = str2.split(' ');
-  const commonWords = words1.filter(word => words2.includes(word));
-  return commonWords.length / Math.max(words1.length, words2.length);
-}
-
-function removeDuplicateSections(text) {
-  // Split by double newlines to get sections
-  const sections = text.split(/\n\s*\n/);
-  const uniqueSections = [];
-  const seenSections = new Set();
-  
-  for (const section of sections) {
-    const cleanSection = section.trim();
-    if (!cleanSection) continue;
-    
-    const sectionFingerprint = createSectionFingerprint(cleanSection);
-    
-    if (!seenSections.has(sectionFingerprint)) {
-      uniqueSections.push(cleanSection);
-      seenSections.add(sectionFingerprint);
-    }
-  }
-  
-  return uniqueSections.join('\n\n');
-}
-
-function createSectionFingerprint(section) {
-  // Use first 3 lines or first 100 chars as fingerprint
-  const lines = section.split('\n').slice(0, 3);
-  return lines.map(line => 
-    line.toLowerCase()
-      .replace(/[^\w\s]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim()
-  ).join(' ').substring(0, 100);
-}
-
-// ---- ENHANCED RESPONSE CLEANER ----
-function cleanAndValidateResponse(rawText, action) {
-  if (!rawText) return "No content generated.";
-  
-  let cleaned = rawText;
-  
-  console.log("🔧 Before cleaning:", cleaned.length);
-  
-  // Remove ALL duplicates
-  cleaned = removeDuplicateContent(cleaned);
-  
-  // Fix formatting
-  cleaned = fixCommonFormatting(cleaned);
-  
-  console.log("✨ After cleaning:", cleaned.length);
-  
-  return cleaned;
-}
-
-function fixCommonFormatting(text) {
-  return text
-    .replace(/\n{3,}/g, '\n\n')
-    .replace(/\s*\n\s*/g, '\n')
-    .replace(/\s+\./g, '.')
-    .replace(/\s+,/g, ',')
-    .replace(/^\s+|\s+$/gm, '')
-    .trim();
-}
-
-// ---- SINGLE CHUNK OPTIMIZED PROMPTS ----
-function getEnhancedPrompt(action, chunk, chunkIndex, totalChunks, targetLang = "English") {
-  const singleChunkInstructions = {
-    SUMMARIZE: `Create ONE SINGLE summary from this text. 
-CRITICAL: Generate each point ONLY ONCE. No repetition.
-Structure:
-- Clear title
-- 4-6 unique bullet points
-- Each point must be completely different
-
-Text: ${chunk}
-
-🚫 NO DUPLICATES - Generate content only once.`,
-
-    FLASHCARDS: `Create flashcards from this content.
-CRITICAL: Each question must be unique.
-- Valid JSON array format
+    FLASHCARDS: `Create flashcards as valid JSON array.
+Requirements:
+- [{"q": "question?", "a": "answer."}]
 - 6-8 unique questions
-- No duplicate questions
+- No duplicates
 
 Content: ${chunk}`,
 
-    SIMPLIFY: `Simplify this text.
-CRITICAL: No repeated explanations.
-- One clear simplified version
-- Unique points only
+    SIMPLIFY: `Simplify this text for better understanding.
+Use clear language and structure.
 
 Text: ${chunk}`,
 
-    TRANSLATE: `Translate this text to ${targetLang}.
-CRITICAL: No duplicate sentences.
-- Fluent translation
-- Unique content only
+    TRANSLATE: `Translate this to ${targetLang}.
+Maintain original meaning.
 
 Text: ${chunk}`,
 
-    PROOFREAD: `Proofread this text.
-CRITICAL: No duplicate corrections.
-- Improved version
-- Unique correction list
+    PROOFREAD: `Proofread and improve this text.
+Provide corrected version and changes list.
 
 Text: ${chunk}`,
 
-    TEMPLATE: `Create HTML template from this page.
-CRITICAL: No duplicate code.
-- Clean template code
-- Unique sections only
+    TEMPLATE: `Create HTML/CSS template.
+Use placeholder content.
 
 Page: ${chunk}`
   };
 
-  const multiChunkInstructions = {
-    SUMMARIZE: `Create a partial summary (chunk ${chunkIndex + 1}/${totalChunks}).
-Focus on unique points not covered in previous chunks.
-Text: ${chunk}`,
-
-    FLASHCARDS: `Create partial flashcards (chunk ${chunkIndex + 1}/${totalChunks}).
-Add unique questions not in previous chunks.
-Content: ${chunk}`,
-
-    SIMPLIFY: `Simplify this partial text (chunk ${chunkIndex + 1}/${totalChunks}).
-Add unique explanations.
-Text: ${chunk}`,
-
-    TRANSLATE: `Translate this partial text to ${targetLang} (chunk ${chunkIndex + 1}/${totalChunks}).
-Text: ${chunk}`,
-
-    PROOFREAD: `Proofread this partial text (chunk ${chunkIndex + 1}/${totalChunks}).
-Text: ${chunk}`,
-
-    TEMPLATE: `Create partial template (chunk ${chunkIndex + 1}/${totalChunks}).
-Add unique code sections.
-Page: ${chunk}`
-  };
-
-  const instructions = (totalChunks === 1) ? singleChunkInstructions : multiChunkInstructions;
-  const instruction = instructions[action] || `Process this text for: ${action}`;
+  const promptText = prompts[action] || `Process: ${chunk}`;
   
-  return instruction;
+  try {
+    const raw = await safePrompt(session, promptText);
+    const resultText = extractResultText(raw);
+    
+    // Clean the result
+    let cleaned = resultText.trim();
+    
+    // Remove any exact duplicate lines
+    const lines = cleaned.split('\n');
+    const uniqueLines = [];
+    const seenLines = new Set();
+    
+    for (const line of lines) {
+      const cleanLine = line.trim();
+      if (cleanLine && !seenLines.has(cleanLine)) {
+        uniqueLines.push(line);
+        seenLines.add(cleanLine);
+      }
+    }
+    
+    cleaned = uniqueLines.join('\n');
+    
+    // Format final response (ONCE)
+    const finalResult = formatFinalResponse(action, cleaned);
+    
+    // Store ONCE
+    chrome.storage.local.set({ 
+      studySparkResult: { 
+        action, 
+        result: [finalResult], 
+        ts: Date.now() 
+      } 
+    });
+    
+    console.log("✅ Single chunk processed successfully");
+    return finalResult;
+    
+  } catch (error) {
+    console.error('❌ Processing failed:', error);
+    const errorMsg = `Error: ${error?.message || 'Processing failed'}`;
+    const finalResult = formatFinalResponse(action, errorMsg);
+    
+    chrome.storage.local.set({ 
+      studySparkResult: { 
+        action, 
+        result: [finalResult], 
+        ts: Date.now() 
+      } 
+    });
+    
+    throw error;
+  }
 }
 
-// ---- OPTIMIZED PROCESSING ----
-async function sendChunkedResults(session, action, chunks, opts = {}) {
-  const results = [];
-  const targetLang = opts.targetLang || "English";
-
+// ---- MAIN PROCESSING FUNCTION ----
+async function processContent(session, action, chunks, targetLang) {
   console.log(`📦 Processing ${chunks.length} chunk(s) for ${action}`);
-
-  for (let i = 0; i < chunks.length; i++) {
-    const promptText = getEnhancedPrompt(action, chunks[i], i, chunks.length, targetLang);
-    let raw = null;
-    try {
-      raw = await safePrompt(session, promptText);
-    } catch (err) {
-      const errMsg = `❌ Error processing chunk ${i + 1}: ${err?.message || String(err)}`;
-      results.push(errMsg);
-      chrome.storage.local.set({ studySparkResult: { action, result: results, ts: Date.now() } }, () => {});
-      try { chrome.runtime.sendMessage({ type: "RESULT_AVAILABLE", action, result: results }); } catch(e){}
-      throw err;
-    }
-
-    const rawText = extractResultText(raw);
-    const cleanedText = cleanAndValidateResponse(rawText, action);
-    
-    // Only add if we have meaningful content
-    if (cleanedText && cleanedText.length > 10) {
-      results.push(cleanedText);
-      console.log(`✅ Processed chunk ${i + 1}/${chunks.length}`);
-    }
-
-    chrome.storage.local.set({ studySparkResult: { action, result: results, ts: Date.now() } }, () => {});
-    try { chrome.runtime.sendMessage({ type: "RESULT_AVAILABLE", action, result: results }); } catch(e){}
-  }
-
-  // For single chunk, use it directly without merge
+  
+  // For single chunk - simple direct processing
   if (chunks.length === 1) {
-    const finalFormatted = formatFinalResponse(action, results[0]);
-    chrome.storage.local.set({ studySparkResult: { action, result: [finalFormatted], ts: Date.now() } }, () => {});
-    try { chrome.runtime.sendMessage({ type: "RESULT_AVAILABLE", action, result: [finalFormatted] }); } catch(e){}
-    return;
+    return await processSingleChunk(session, action, chunks[0], targetLang);
   }
-
-  // For multiple chunks, do final merge
-  await createFinalPolishedResult(session, action, results, targetLang);
-}
-
-async function createFinalPolishedResult(session, action, partialResults, targetLang) {
-  console.log("🔗 Merging partial results...");
-
-  const mergeInstructions = {
-    SUMMARIZE: `COMBINE these partial summaries into ONE cohesive summary.
-CRITICAL: Remove ALL duplicate points. Each bullet point must be UNIQUE.
-Keep only the best 5-6 points total.`,
-
-    FLASHCARDS: `COMBINE into ONE JSON array.
-CRITICAL: Remove duplicate questions.
-Keep maximum 10 unique questions.`,
-
-    SIMPLIFY: `MERGE into one simplified version.
-Remove duplicate explanations.`,
+  
+  // For multiple chunks - process each and merge
+  const results = [];
+  
+  for (let i = 0; i < chunks.length; i++) {
+    const promptText = `Process part ${i + 1} of ${chunks.length} for ${action}:\n\n${chunks[i]}`;
     
-    TRANSLATE: `COMBINE into one fluent translation.
-Remove duplicate sentences.`,
-    
-    PROOFREAD: `MERGE into complete polished text.
-Remove duplicate corrections.`,
-    
-    TEMPLATE: `COMBINE into one complete template.
-Remove duplicate code sections.`
-  };
-
-  const instruction = mergeInstructions[action] || `Combine and remove ALL duplicates.`;
-  const mergePrompt = `${instruction}\n\nParts to combine:\n${partialResults.join('\n\n---\n\n')}`;
-
+    try {
+      const raw = await safePrompt(session, promptText);
+      const resultText = extractResultText(raw);
+      results.push(resultText.trim());
+      console.log(`✅ Processed chunk ${i + 1}/${chunks.length}`);
+    } catch (error) {
+      console.error(`❌ Failed chunk ${i + 1}:`, error);
+      results.push(`Error in part ${i + 1}`);
+    }
+  }
+  
+  // Merge results
+  const mergePrompt = `Combine these ${results.length} parts into one cohesive ${action} result:\n\n${results.join('\n\n---\n\n')}`;
+  
   try {
     const mergedRaw = await safePrompt(session, mergePrompt);
     const mergedText = extractResultText(mergedRaw);
-    const finalCleaned = cleanAndValidateResponse(mergedText, action);
+    const finalResult = formatFinalResponse(action, mergedText.trim());
     
-    const finalFormatted = formatFinalResponse(action, finalCleaned);
-    chrome.storage.local.set({ studySparkResult: { action, result: [finalFormatted], ts: Date.now() } }, () => {});
-    try { chrome.runtime.sendMessage({ type: "RESULT_AVAILABLE", action, result: [finalFormatted] }); } catch(e){}
-    console.log("✅ Final merge completed");
+    chrome.storage.local.set({ 
+      studySparkResult: { 
+        action, 
+        result: [finalResult], 
+        ts: Date.now() 
+      } 
+    });
+    
+    console.log("✅ All chunks merged successfully");
+    return finalResult;
+    
   } catch (error) {
-    console.error('❌ Final merge failed:', error);
-    // Use the first result as fallback
-    const fallback = partialResults[0] || "No content generated";
-    const finalFormatted = formatFinalResponse(action, fallback);
-    chrome.storage.local.set({ studySparkResult: { action, result: [finalFormatted], ts: Date.now() } }, () => {});
-    try { chrome.runtime.sendMessage({ type: "RESULT_AVAILABLE", action, result: [finalFormatted] }); } catch(e){}
+    console.error('❌ Merge failed:', error);
+    const fallback = results[0] || "No content generated";
+    const finalResult = formatFinalResponse(action, fallback);
+    
+    chrome.storage.local.set({ 
+      studySparkResult: { 
+        action, 
+        result: [finalResult], 
+        ts: Date.now() 
+      } 
+    });
+    
+    throw error;
   }
 }
 
@@ -383,7 +256,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (!request || request.type !== "RUN_ACTION") return;
 
   (async () => {
-    // Clear older stored result so UI doesn't show stale data
+    // Clear previous result
     try { await chrome.storage.local.remove("studySparkResult"); } catch (e){}
 
     if (typeof LanguageModel === "undefined") {
@@ -415,14 +288,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return;
       }
 
-      // Determine output language: default "en". For TRANSLATE, prompt user for target language.
+      // Handle language selection
       let targetLang = "English";
       if (request.action === "TRANSLATE") {
         try {
-          // prompt the user for target language code / name (minimal UX)
           const userLang = window.prompt("Enter target language code or name (e.g. en, es, ja) — default: en", "en");
           if (userLang && userLang.trim()) {
-            // convert code to name when simple codes provided:
             const map = { en: "English", es: "Spanish", ja: "Japanese", hi: "Hindi", fr: "French" };
             const k = userLang.trim().toLowerCase();
             targetLang = map[k] || userLang.trim();
@@ -432,16 +303,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
       }
 
-      // Create a session and explicitly set outputLanguage to avoid warnings
+      // Create session
       const outputCode = (request.action === "TRANSLATE" ? (targetLang === "English" ? "en" : targetLang.substring(0, 2).toLowerCase()) : "en");
       const session = await LanguageModel.create({ outputLanguage: outputCode });
 
-      // Extract content
+      // Extract and process content
       const fullText = getCleanPageText();
       if (!fullText || fullText.length < 10) {
         const msg = "No readable page text found to process.";
-        chrome.storage.local.set({ studySparkResult: { action: request.action, result: [formatFinalResponse(request.action, msg)], ts: Date.now() } }, () => {});
-        try { chrome.runtime.sendMessage({ type: "RESULT_AVAILABLE", action: request.action, result: [formatFinalResponse(request.action, msg)] }); } catch(e){}
+        chrome.storage.local.set({ 
+          studySparkResult: { 
+            action: request.action, 
+            result: [formatFinalResponse(request.action, msg)], 
+            ts: Date.now() 
+          } 
+        });
         sendResponse({ success: false, error: msg });
         return;
       }
@@ -449,15 +325,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       const chunks = chunkText(fullText, 3000);
       console.log(`📄 Extracted ${fullText.length} chars, split into ${chunks.length} chunks`);
 
-      // Send progressive + final
-      await sendChunkedResults(session, request.action, chunks, { targetLang });
+      // PROCESS CONTENT ONLY ONCE
+      await processContent(session, request.action, chunks, targetLang);
 
       sendResponse({ success: true, result: "Processing complete." });
+      
     } catch (err) {
       console.error("❌ AI request failed:", err);
       const message = err?.message || String(err);
-      chrome.storage.local.set({ studySparkResult: { action: request.action, result: [`❌ ${message}`], ts: Date.now() } }, () => {});
-      try { chrome.runtime.sendMessage({ type: "RESULT_AVAILABLE", action: request.action, result: [`❌ ${message}`] }); } catch(e){}
+      chrome.storage.local.set({ 
+        studySparkResult: { 
+          action: request.action, 
+          result: [`❌ ${message}`], 
+          ts: Date.now() 
+        } 
+      });
       sendResponse({ success: false, error: message });
     }
   })();
