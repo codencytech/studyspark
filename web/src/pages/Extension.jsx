@@ -1,7 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 const Extension = () => {
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = '/studyspark-extension.zip';
+    link.download = 'studyspark-extension.zip';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="page-container">
       <div className="content-container">
@@ -49,13 +57,80 @@ const Extension = () => {
               </p>
               
               <div className="download-section">
-                <button className="download-button">
+                <button className="download-button" onClick={handleDownload}>
                   <span className="download-icon">⬇️</span>
                   Download Extension
                 </button>
                 <div className="download-info">
                   <span className="version">v1.0.0</span>
                   <span className="size">• 2.3 MB</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Installation Instructions Section */}
+          <div className="installation-guide">
+            <h2 className="guide-title">Installation Guide</h2>
+            <div className="guide-steps">
+              <div className="step">
+                <div className="step-number">1</div>
+                <div className="step-content">
+                  <h3>Download the Extension</h3>
+                  <p>Click the download button above to get the StudySpark extension ZIP file</p>
+                  <div className="step-image">
+                    <img src="./images/download-step.jpg" alt="Download extension" />
+                  </div>
+                </div>
+              </div>
+              <div className="step">
+                <div className="step-number">2</div>
+                <div className="step-content">
+                  <h3>Extract the ZIP File</h3>
+                  <p>Unzip the downloaded file to a folder on your computer</p>
+                  <div className="step-image">
+                    <img src="/images/extract-step.jpg" alt="Extract ZIP file" />
+                  </div>
+                </div>
+              </div>
+              <div className="step">
+                <div className="step-number">3</div>
+                <div className="step-content">
+                  <h3>Open Chrome Extensions</h3>
+                  <p>Navigate to <code>chrome://extensions/</code> in your Chrome browser</p>
+                  <div className="step-image">
+                    <img src="/images/extensions-page.jpg" alt="Chrome extensions page" />
+                  </div>
+                </div>
+              </div>
+              <div className="step">
+                <div className="step-number">4</div>
+                <div className="step-content">
+                  <h3>Enable Developer Mode</h3>
+                  <p>Toggle the "Developer mode" switch in the top right corner</p>
+                  <div className="step-image">
+                    <img src="/images/developer-mode.jpg" alt="Enable developer mode" />
+                  </div>
+                </div>
+              </div>
+              <div className="step">
+                <div className="step-number">5</div>
+                <div className="step-content">
+                  <h3>Load Unpacked Extension</h3>
+                  <p>Click "Load unpacked" and select the extracted extension folder</p>
+                  <div className="step-image">
+                    <img src="/images/load-unpacked.jpg" alt="Load unpacked extension" />
+                  </div>
+                </div>
+              </div>
+              <div className="step">
+                <div className="step-number">6</div>
+                <div className="step-content">
+                  <h3>Start Using</h3>
+                  <p>Pin the extension and click on any webpage to use AI features</p>
+                  <div className="step-image">
+                    <img src="/images/using-extension.jpg" alt="Using the extension" />
+                  </div>
                 </div>
               </div>
             </div>

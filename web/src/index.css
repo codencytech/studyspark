@@ -2401,6 +2401,106 @@ body {
   line-height: 1.5;
 }
 
+/* Installation Guide Styles with Images */
+.installation-guide {
+  margin: 80px 0;
+  padding: 40px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+}
+
+.guide-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  color: var(--color-text);
+}
+
+.guide-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 25px;
+  padding: 30px;
+  background: var(--color-surface-light);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.step:hover {
+  border-color: var(--color-accent);
+  transform: translateX(10px);
+}
+
+.step-number {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+  color: var(--color-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: var(--color-text);
+}
+
+.step-content p {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.step-image {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 15px;
+}
+
+.step-image img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.step-image img:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-lg);
+}
+
+.step-content code {
+  background: var(--color-bg);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  color: var(--color-accent-light);
+  border: 1px solid var(--color-border);
+}
+
 /* ===== ABOUT PAGE STYLES ===== */
 .about-content {
   max-width: 1000px;
