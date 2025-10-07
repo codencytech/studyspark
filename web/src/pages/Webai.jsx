@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useAI } from "../hooks/useAI";
 
 function markdownToHtml(md) {
@@ -25,18 +25,25 @@ function markdownToHtml(md) {
   return text;
 }
 
-const Home = () => {
+const Webai = () => {
   const { runAction, isAIAvailable, loading } = useAI();
   const [inputText, setInputText] = useState("");
   const [action, setAction] = useState("SUMMARIZE");
   const [messages, setMessages] = useState([]);
   const [aiParts, setAiParts] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const scrollRef = useRef(null);
+  const resultsContainerRef = useRef(null);
 
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, aiParts, isProcessing]);
+  const scrollToResults = () => {
+    setTimeout(() => {
+      if (resultsContainerRef.current) {
+        resultsContainerRef.current.scrollIntoView({ 
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    }, 100);
+  };
 
   function appendUserMessage(text) {
     setMessages(prev => [...prev, { type: "user", text }]);
@@ -72,12 +79,15 @@ const Home = () => {
 
   const handleSend = async () => {
     if (!inputText.trim()) return;
+    
+    // Scroll to results first
+    scrollToResults();
+    
     appendUserMessage(inputText);
     setAiParts([]);
     setIsProcessing(true);
 
     setMessages(prev => [...prev, { type: "ai", html: "<p>Processing...</p>", raw: "" }]);
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
 
     const onPartial = ({ index, text, status }) => {
       if (status === "initial") {
@@ -226,7 +236,7 @@ const Home = () => {
           </div>
 
           {/* Results Section */}
-          <div className="results-section">
+          <div className="results-section" ref={resultsContainerRef}>
             <div className="results-header">
               <h2 className="results-title">AI Results</h2>
               <div className="results-indicator">
@@ -282,8 +292,6 @@ const Home = () => {
                       <p>AI is generating your content...</p>
                     </div>
                   )}
-
-                  <div ref={scrollRef} />
                 </div>
               )}
             </div>
@@ -294,4 +302,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Webai;

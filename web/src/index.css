@@ -1044,8 +1044,23 @@ body {
 }
 
 .social-icon {
-  font-size: 1.2rem;
+  width: 20px;
+  height: 20px;
   transition: var(--transition);
+}
+
+.social-link:hover .social-icon {
+  transform: scale(1.2);
+}
+
+/* Specific icon colors on hover */
+
+.social-link[aria-label="Twitter"]:hover .social-icon {
+  color: #1da1f2;
+}
+
+.social-link[aria-label="LinkedIn"]:hover .social-icon {
+  color: #0077b5;
 }
 
 /* Footer Links */
@@ -3360,5 +3375,322 @@ body {
   
   .guide-cta {
     padding: 40px 24px;
+  }
+}
+
+/* Legal Pages */
+.legal-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.legal-section {
+  margin-bottom: 40px;
+}
+
+.legal-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  color: #7a7878;
+}
+
+.legal-section p {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.legal-section ul {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  padding-left: 20px;
+}
+
+.legal-section li {
+  margin-bottom: 8px;
+}
+
+.legal-update {
+  padding-top: 40px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+/* ===== ENHANCED CONTACT PAGE STYLES ===== */
+.contact-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.contact-hero {
+  margin-bottom: 80px;
+}
+
+.contact-intro {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 60px;
+}
+
+.contact-intro h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: var(--color-text);
+  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.contact-intro p {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+  margin: 0 auto;
+}
+
+.contact-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: 40px 30px;
+  text-align: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 170, 0.05), transparent);
+  transition: 0.8s;
+}
+
+.contact-card:hover .card-glow {
+  left: 100%;
+}
+
+.contact-icon {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+  display: inline-block;
+  transition: var(--transition);
+}
+
+.contact-card:hover .contact-icon {
+  transform: scale(1.1);
+}
+
+.contact-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  color: var(--color-text);
+}
+
+.contact-card p {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 25px;
+  font-size: 1rem;
+}
+
+.contact-detail {
+  background: var(--color-surface-light);
+  padding: 15px;
+  border-radius: var(--border-radius);
+  margin-bottom: 20px;
+  border: 1px solid var(--color-border-light);
+}
+
+.detail-label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 1.1rem;
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.detail-value:hover {
+  color: var(--color-accent-light);
+}
+
+.response-time {
+  margin-top: 15px;
+}
+
+.time-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  background: rgba(0, 212, 170, 0.1);
+  color: var(--color-accent);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.contact-actions {
+  margin-top: 20px;
+}
+
+.github-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+  color: var(--color-bg);
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  transition: var(--transition);
+  border: none;
+  cursor: pointer;
+}
+
+.github-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-accent);
+}
+
+.support-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.support-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--color-surface-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.support-link:hover {
+  border-color: var(--color-accent);
+  background: rgba(0, 212, 170, 0.05);
+  transform: translateX(5px);
+}
+
+.contact-cta {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: 50px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(0, 212, 170, 0.03) 0%, transparent 50%);
+}
+
+.cta-content {
+  position: relative;
+  z-index: 1;
+}
+
+.cta-content h3 {
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+  color: var(--color-text);
+}
+
+.cta-content p {
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .contact-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .contact-card {
+    padding: 30px 25px;
+  }
+  
+  .contact-intro h2 {
+    font-size: 2rem;
+  }
+  
+  .contact-intro p {
+    font-size: 1.1rem;
+  }
+  
+  .contact-cta {
+    padding: 40px 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-card {
+    padding: 25px 20px;
+  }
+  
+  .contact-icon {
+    font-size: 3rem;
+  }
+  
+  .support-links {
+    gap: 10px;
+  }
+  
+  .support-link {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+  
+  .github-button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
   }
 }

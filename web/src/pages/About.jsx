@@ -22,6 +22,22 @@ const About = () => {
                 all without sending your data anywhere. That's StudySpark.
               </p>
               
+              <h3>Chrome Extension - One-Click AI Magic</h3>
+              <p>
+                Our Chrome extension brings AI power directly to any webpage. Just install it once 
+                and get instant access to all AI features without copying and pasting. Highlight any 
+                text or click the extension icon to process entire pages. Perfect for quick learning 
+                while browsing articles, research papers, or educational content.
+              </p>
+
+              <h3>Web App - Full-Featured AI Platform</h3>
+              <p>
+                Prefer working in a dedicated interface? Our web app gives you the complete 
+                StudySpark experience with a beautiful, focused workspace. Great for longer 
+                content, detailed analysis, and when you're working on mobile devices where 
+                Chrome extensions aren't available.
+              </p>
+
               <h3>Built with Privacy First</h3>
               <p>
                 We believe your learning data should stay yours. That's why everything 
@@ -31,11 +47,10 @@ const About = () => {
 
               <h3>How It Works</h3>
               <p>
-                When you're reading something online and need help understanding, 
-                just click the StudySpark extension. It uses your browser's own AI 
-                capabilities to process text and give you instant learning support. 
-                Whether you're a student, researcher, or curious learner, StudySpark 
-                makes learning smoother and more efficient.
+                Whether you choose the extension or web app, StudySpark uses your browser's 
+                own AI capabilities to process text locally. Select text and click the extension, 
+                or paste content in our web interface - you'll get instant learning support 
+                without any data leaving your computer.
               </p>
             </div>
             
