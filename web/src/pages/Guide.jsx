@@ -5,31 +5,47 @@ const Guide = () => {
   const steps = [
     {
       title: 'Choose Your Platform',
-      description: 'Decide whether to use our Web AI or Chrome Extension',
+      description: 'Select how you want to use StudySpark based on your needs',
       icon: '🖥️',
       options: [
-        { text: 'Web AI', link: '/ai', description: 'Use directly in your browser' },
-        { text: 'Chrome Extension', link: '/extension', description: 'Install for one-click access' }
+        { text: 'Web AI', link: '/ai', description: 'Use our web interface for quick AI tasks' },
+        { text: 'Chrome Extension', link: '/extension', description: 'Install extension for on-page content processing' }
       ]
     },
     {
-      title: 'Get Started',
-      description: 'Learn how to use StudySpark effectively',
+      title: 'Using the Web AI',
+      description: 'How to use our web interface effectively',
       icon: '🚀',
       instructions: [
-        'Enter text or paste a URL',
-        'Select your desired action',
-        'Click generate and get instant results'
+        'Type or paste any text content in the input box',
+        'Select from 6 AI actions: Summarize, Simplify, Translate, Proofread, Generate Template, or Flashcards',
+        'Click the action button and get instant AI-powered results',
+        'Copy the results for your use'
       ]
     },
     {
-      title: 'Advanced Features',
-      description: 'Make the most of StudySpark',
+      title: 'Using Chrome Extension',
+      description: 'How to use our browser extension',
       icon: '⚡',
+      instructions: [
+        'Install the extension from our download page',
+        'Visit any webpage with text content',
+        'Click the StudySpark extension icon in your browser',
+        'Select any AI action to process the current page content',
+        'View results in a popup window'
+      ]
+    },
+    {
+      title: 'Available AI Features',
+      description: 'What you can do with StudySpark',
+      icon: '🤖',
       features: [
-        'Use the extension on any webpage',
-        'Process uploaded documents',
-        'Generate flashcards for studying'
+        'Summarize - Get key points from long text',
+        'Simplify - Make complex content easy to understand', 
+        'Translate - Convert text between languages',
+        'Proofread - Fix grammar and improve writing',
+        'Generate Template - Create HTML/CSS templates from websites',
+        'Flashcards - Convert content into Q&A study cards'
       ]
     }
   ];
@@ -40,7 +56,7 @@ const Guide = () => {
         <div className="page-header">
           <h1 className="page-title">How to Use StudySpark</h1>
           <p className="page-subtitle">
-            Get started with our AI-powered learning tools in minutes
+            Your complete guide to using our AI-powered learning tools
           </p>
         </div>
 
@@ -93,9 +109,26 @@ const Guide = () => {
             ))}
           </div>
 
+          <div className="development-notice">
+            <div className="notice-icon">🚧</div>
+            <div className="notice-content">
+              <h3>Development Notice</h3>
+              <p>
+                StudySpark is currently in active development as a hackathon project. 
+                While our core features are functional, please note that this is a 
+                demonstration of Chrome's built-in AI capabilities and may not yet 
+                be production-ready for all use cases.
+              </p>
+              <p>
+                We're continuously working to improve the AI responses and user experience. 
+                Your understanding and feedback are greatly appreciated!
+              </p>
+            </div>
+          </div>
+
           <div className="guide-cta">
             <h2>Ready to Get Started?</h2>
-            <p>Choose your preferred way to use StudySpark and begin transforming your learning experience today.</p>
+            <p>Choose your preferred way to use StudySpark and experience AI-powered learning today.</p>
             <div className="cta-buttons">
               <Link to="/ai" className="cta-button">
                 Try Web AI

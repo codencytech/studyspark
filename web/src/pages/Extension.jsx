@@ -52,14 +52,23 @@ const Extension = () => {
             <div className="extension-info">
               <h2>One-Click AI Magic</h2>
               <p>
-                Transform any webpage instantly with Chrome's built-in AI. 
+                Transform any webpage instantly with Chrome's built-in AI.
                 No data sent to servers, completely private and free.
               </p>
-              
+
               <div className="download-section">
                 <button className="download-button" onClick={handleDownload}>
-                  <span className="download-icon">⬇️</span>
-                  Download Extension
+                  <div className="download-icon-wrapper">
+                    <svg className="download-icon" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 16L12 4M12 16L8 12M12 16L16 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M4 20H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                    <div className="download-pulse"></div>
+                  </div>
+                  <span className="download-text">
+                    Download Extension
+                    <span className="download-subtext">Get started in seconds</span>
+                  </span>
                 </button>
                 <div className="download-info">
                   <span className="version">v1.0.0</span>
@@ -91,6 +100,9 @@ const Extension = () => {
                   <div className="step-image">
                     <img src="/images/extract-step.jpg" alt="Extract ZIP file" />
                   </div>
+                  <div className="step-image">
+                    <img src="/images/unzipit.jpg" alt="Extract ZIP file" />
+                  </div>
                 </div>
               </div>
               <div className="step">
@@ -120,6 +132,9 @@ const Extension = () => {
                   <p>Click "Load unpacked" and select the extracted extension folder</p>
                   <div className="step-image">
                     <img src="/images/load-unpacked.jpg" alt="Load unpacked extension" />
+                  </div>
+                  <div className="step-image">
+                    <img src="/images/selectfolder.jpg" alt="Load unpacked extension" />
                   </div>
                 </div>
               </div>

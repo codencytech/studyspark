@@ -3,16 +3,16 @@ import React from 'react';
 const Team = () => {
   const teamMembers = [
     {
-      name: 'Your Name',
-      role: 'Full Stack Developer',
-      description: 'Passionate about creating innovative web experiences with cutting-edge technologies.',
+      name: 'Ayush Kumar Singh',
+      role: 'Lead Developer & Designer',
+      description: 'Built the entire application from scratch including the Chrome extension, React website, AI integration, and all the user interfaces. Passionate about creating innovative learning tools.',
       avatar: '👨‍💻'
     },
     {
-      name: 'Chrome Team',
-      role: 'AI Technology',
-      description: 'Providing the revolutionary built-in AI APIs that power StudySpark.',
-      avatar: '🤖'
+      name: 'Pranjal Gupta',
+      role: 'Project Advisor & Tester',
+      description: 'Provided valuable feedback, testing, and support throughout the development process. Helped with project planning and feature validation.',
+      avatar: '👨‍🎓'
     }
   ];
 
@@ -28,10 +28,11 @@ const Team = () => {
 
         <div className="team-content">
           <div className="team-intro">
-            <h2>Small Team, Big Vision</h2>
+            <h2>Built by Students, for Students</h2>
             <p>
-              We're a dedicated team of developers and AI enthusiasts committed to 
-              making learning more accessible and efficient through innovative technology.
+              We're two computer science students who saw the potential of Chrome's new AI technology 
+              to help learners. What started as a hackathon project turned into a fully-featured 
+              learning platform that we're proud to share with the world.
             </p>
           </div>
 
@@ -47,6 +48,14 @@ const Team = () => {
                 <div className="member-glow"></div>
               </div>
             ))}
+          </div>
+
+          <div className="special-thanks">
+            <h3>Special Thanks</h3>
+            <p>
+              We want to express our gratitude to the Chrome team for making their built-in AI APIs 
+              accessible to developers. Their innovative technology made this project possible.
+            </p>
           </div>
 
           <div className="team-values">

@@ -7,62 +7,71 @@ const About = () => {
         <div className="page-header">
           <h1 className="page-title">About StudySpark</h1>
           <p className="page-subtitle">
-            Revolutionizing learning with Chrome's built-in AI technology
+            Your AI learning companion that works right in your browser
           </p>
         </div>
 
         <div className="about-content">
           <div className="about-hero">
             <div className="about-text">
-              <h2>Our Mission</h2>
+              <h2>What is StudySpark?</h2>
               <p>
-                StudySpark was born from a simple idea: learning should be accessible, 
-                private, and enhanced by AI without compromising your data privacy. 
-                We leverage Chrome's revolutionary built-in AI to bring powerful 
-                learning tools directly to your browser.
+                StudySpark is a smart learning tool that lives in your browser. 
+                Imagine having a study buddy that can instantly summarize long articles, 
+                simplify complex topics, translate languages, and help you learn better - 
+                all without sending your data anywhere. That's StudySpark.
               </p>
               
-              <h3>Why We're Different</h3>
+              <h3>Built with Privacy First</h3>
               <p>
-                Unlike other AI tools that send your data to remote servers, 
-                StudySpark processes everything locally on your device. This means 
-                faster responses, complete privacy, and no subscription fees.
+                We believe your learning data should stay yours. That's why everything 
+                happens right on your device. No cloud servers, no data collection, 
+                just pure learning assistance that respects your privacy.
+              </p>
+
+              <h3>How It Works</h3>
+              <p>
+                When you're reading something online and need help understanding, 
+                just click the StudySpark extension. It uses your browser's own AI 
+                capabilities to process text and give you instant learning support. 
+                Whether you're a student, researcher, or curious learner, StudySpark 
+                makes learning smoother and more efficient.
               </p>
             </div>
             
             <div className="about-stats">
               <div className="stat">
                 <div className="stat-number">100%</div>
-                <div className="stat-label">On-Device Processing</div>
+                <div className="stat-label">Private & Secure</div>
               </div>
               <div className="stat">
-                <div className="stat-number">Zero</div>
-                <div className="stat-label">Data Collection</div>
+                <div className="stat-number">Instant</div>
+                <div className="stat-label">AI Assistance</div>
               </div>
               <div className="stat">
                 <div className="stat-number">Free</div>
-                <div className="stat-label">Forever</div>
+                <div className="stat-label">Always Free</div>
               </div>
             </div>
           </div>
 
           <div className="tech-stack">
-            <h2>Powered by Cutting-Edge Technology</h2>
+            <h2>How We Made It Possible</h2>
             <div className="tech-grid">
               <div className="tech-item">
-                <div className="tech-icon">🤖</div>
-                <h4>Gemini Nano</h4>
-                <p>Google's advanced on-device AI model</p>
+                <div className="tech-icon">🚀</div>
+                <h4>Browser Technology</h4>
+                <p>Built using modern Chrome extension capabilities and web technologies</p>
               </div>
               <div className="tech-item">
-                <div className="tech-icon">🌐</div>
-                <h4>Chrome Built-in AI</h4>
-                <p>Native browser AI capabilities</p>
+                <div className="tech-icon">🤝</div>
+                <h4>Chrome AI Integration</h4>
+                <p>Special thanks to the Chrome team for making built-in AI accessible to developers</p>
               </div>
               <div className="tech-item">
-                <div className="tech-icon">⚡</div>
-                <h4>Web Technologies</h4>
-                <p>Modern React and Chrome Extensions</p>
+                <div className="tech-icon">💡</div>
+                <h4>Learning Focused</h4>
+                <p>Designed specifically to help students and learners of all kinds</p>
               </div>
             </div>
           </div>

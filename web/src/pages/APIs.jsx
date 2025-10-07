@@ -3,39 +3,51 @@ import React from 'react';
 const APIs = () => {
   const apis = [
     {
-      name: 'Summarizer API',
+      name: 'Summarize',
       status: 'Available',
-      description: 'Condense long-form content into concise summaries',
+      description: 'Quickly condense long articles and texts into key points for faster learning',
       icon: '📊'
     },
     {
-      name: 'Translator API', 
+      name: 'Simplify', 
       status: 'Available',
-      description: 'Translate text between multiple languages',
+      description: 'Make complex topics easier to understand by breaking down difficult language',
+      icon: '✨'
+    },
+    {
+      name: 'Translate',
+      status: 'Available',
+      description: 'Instantly translate text between different languages while maintaining meaning',
       icon: '🌍'
     },
     {
-      name: 'Proofreader API',
+      name: 'Proofread',
       status: 'Available',
-      description: 'Correct grammar and improve writing clarity',
+      description: 'Fix grammar mistakes and improve writing clarity for better communication',
       icon: '✏️'
     },
     {
-      name: 'Rewriter API',
+      name: 'Generate Template',
       status: 'Available',
-      description: 'Rephrase and simplify complex text',
-      icon: '✨'
+      description: 'Create HTML/CSS templates from any website with placeholder content for learning web development',
+      icon: '💻'
+    },
+    {
+      name: 'Flashcards',
+      status: 'Available',
+      description: 'Automatically convert any content into Q&A flashcards for effective studying',
+      icon: '📝'
     },
     {
       name: 'Writer API',
       status: 'Coming Soon',
-      description: 'Generate original content from prompts',
+      description: 'Generate original content and creative writing from prompts',
       icon: '🖋️'
     },
     {
       name: 'Prompt API',
-      status: 'Available',
-      description: 'Multimodal AI interactions',
+      status: 'Coming Soon',
+      description: 'Advanced multimodal AI interactions and complex queries',
       icon: '💬'
     }
   ];
@@ -44,19 +56,19 @@ const APIs = () => {
     <div className="page-container">
       <div className="content-container">
         <div className="page-header">
-          <h1 className="page-title">Chrome Built-in AI APIs</h1>
+          <h1 className="page-title">AI Features</h1>
           <p className="page-subtitle">
-            Leveraging Chrome's revolutionary on-device AI capabilities
+            Powerful learning tools powered by Chrome's built-in AI
           </p>
         </div>
 
         <div className="apis-content">
           <div className="apis-intro">
-            <h2>What are Chrome Built-in AI APIs?</h2>
+            <h2>Smart Learning Features</h2>
             <p>
-              Chrome's Built-in AI APIs allow web applications to access powerful AI models 
-              directly in the browser, without sending data to external servers. This enables 
-              privacy-first, instant AI experiences.
+              StudySpark brings you essential AI tools designed specifically for learners. 
+              Each feature works instantly in your browser, helping you study smarter without 
+              compromising your privacy or breaking your workflow.
             </p>
           </div>
 
@@ -75,23 +87,23 @@ const APIs = () => {
           </div>
 
           <div className="apis-info">
-            <h3>Benefits of Built-in AI</h3>
+            <h3>Why It Works So Well</h3>
             <div className="benefits-list">
               <div className="benefit">
                 <span className="benefit-icon">🔒</span>
-                <span>Complete Privacy - No data leaves your device</span>
+                <span>Your data never leaves your computer - complete privacy</span>
               </div>
               <div className="benefit">
                 <span className="benefit-icon">⚡</span>
-                <span>Instant Processing - No network latency</span>
+                <span>Instant results without waiting for servers</span>
               </div>
               <div className="benefit">
                 <span className="benefit-icon">💸</span>
-                <span>Zero Cost - No API fees or usage limits</span>
+                <span>Completely free - no hidden costs or subscriptions</span>
               </div>
               <div className="benefit">
-                <span className="benefit-icon">🌐</span>
-                <span>Works Offline - Process content anywhere</span>
+                <span className="benefit-icon">🎯</span>
+                <span>Built specifically for students and learners</span>
               </div>
             </div>
           </div>
