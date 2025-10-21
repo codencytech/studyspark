@@ -611,6 +611,13 @@ body {
   opacity: 1;
 }
 
+.logo-image {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+
+
 .nav-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -1075,6 +1082,13 @@ body {
   flex-direction: column;
   gap: 16px;
 }
+
+.footer-logo-image {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
 
 .footer-title {
   color: var(--color-text);

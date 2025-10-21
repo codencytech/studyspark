@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import logo from '../assets/studysparklogo.png';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -28,16 +29,16 @@ const Header = () => {
 
   return (
     <header className={`header ${isScrolled ? 'header-scrolled' : ''} ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
-      {/* Animated Background */}
       <div className="header-bg"></div>
       
-      {/* Navigation Container */}
       <nav className="nav-container">
-        {/* Logo */}
+        {/* ✅ Updated Logo */}
         <Link to="/" className="logo">
-          <div className="logo-icon">
-            <div className="logo-spark"></div>
-          </div>
+          <img 
+            src={logo} 
+            alt="StudySpark Logo" 
+            className="logo-image" 
+          />
           <span className="logo-text">StudySpark</span>
         </Link>
 

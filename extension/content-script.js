@@ -359,14 +359,14 @@ function createSelectionToolbar() {
   Object.assign(selectionToolbar.style, {
     position: 'absolute',
     zIndex: '99999',
-    background: 'linear-gradient(145deg, #0f172a, #1e293b)',
+    background: 'linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-light) 100%)',
     backdropFilter: 'blur(14px)',
-    border: '1px solid rgba(59, 130, 246, 0.2)',
-    borderRadius: '16px',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+    border: '1px solid var(--color-border)',
+    borderRadius: 'var(--border-radius-lg)',
+    boxShadow: 'var(--shadow-lg), var(--shadow-accent)',
     display: 'flex',
-    gap: '12px',
-    padding: '12px 18px',
+    gap: '8px',
+    padding: '12px 16px',
     fontFamily: 'Inter, sans-serif',
     fontSize: '14px',
     userSelect: 'none',
@@ -374,37 +374,75 @@ function createSelectionToolbar() {
     transition: 'opacity 0.3s, transform 0.2s',
     opacity: '0',
     transform: 'scale(0.9)',
-    color: '#e2e8f0'
+    color: 'var(--color-text)'
   });
 
-  const actions = ['SUMMARIZE', 'SIMPLIFY', 'TRANSLATE', 'PROOFREAD'];
-  actions.forEach(act => {
+  // Add CSS variables for theme
+  const style = document.createElement('style');
+  style.textContent = `
+    :root {
+      --color-bg: #0a0a0a;
+      --color-surface: #111111;
+      --color-surface-light: #1a1a1a;
+      --color-text: #f5f5f5;
+      --color-text-secondary: #a3a3a3;
+      --color-accent: #00d4aa;
+      --color-accent-dark: #00b894;
+      --color-accent-light: #26f7d0;
+      --color-border: #2a2a2a;
+      --border-radius: 12px;
+      --border-radius-lg: 16px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.7);
+      --shadow-accent: 0 0 30px rgba(0, 212, 170, 0.3);
+    }
+  `;
+  document.head.appendChild(style);
+
+  const actions = [
+    { name: 'SUMMARIZE', icon: '📊' },
+    { name: 'SIMPLIFY', icon: '✨' },
+    { name: 'TRANSLATE', icon: '🌍' },
+    { name: 'PROOFREAD', icon: '✏️' }
+  ];
+
+  actions.forEach(({ name, icon }) => {
     const btn = document.createElement('button');
-    btn.textContent = act.charAt(0) + act.slice(1).toLowerCase();
+    btn.innerHTML = `${icon} ${name.charAt(0) + name.slice(1).toLowerCase()}`;
     Object.assign(btn.style, {
-      background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '10px',
-      padding: '8px 16px',
+      background: 'var(--color-surface)',
+      color: 'var(--color-text)',
+      border: '1px solid var(--color-border)',
+      borderRadius: 'var(--border-radius)',
+      padding: '8px 12px',
       cursor: 'pointer',
       fontWeight: '600',
-      fontSize: '13px',
-      transition: 'all 0.25s ease',
-      boxShadow: '0 6px 16px rgba(0,0,0,0.5)',
+      fontSize: '12px',
+      transition: 'var(--transition)',
+      boxShadow: 'var(--shadow)',
       textTransform: 'none',
-      letterSpacing: '0.025em'
+      letterSpacing: '0.025em',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px',
+      position: 'relative',
+      overflow: 'hidden'
     });
 
+    // Add hover glow effect
     btn.addEventListener('mouseenter', () => {
-      btn.style.transform = 'scale(1.1)';
-      btn.style.boxShadow = '0 8px 24px rgba(0,0,0,0.7)';
-      btn.style.background = 'linear-gradient(135deg, #60a5fa, #2563eb)';
+      btn.style.transform = 'translateY(-2px) scale(1.05)';
+      btn.style.boxShadow = 'var(--shadow-lg), var(--shadow-accent)';
+      btn.style.borderColor = 'var(--color-accent)';
+      btn.style.background = 'linear-gradient(135deg, rgba(0, 212, 170, 0.1) 0%, rgba(0, 184, 148, 0.05) 100%)';
     });
+
     btn.addEventListener('mouseleave', () => {
-      btn.style.transform = 'scale(1)';
-      btn.style.boxShadow = '0 6px 16px rgba(0,0,0,0.5)';
-      btn.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+      btn.style.transform = 'translateY(0) scale(1)';
+      btn.style.boxShadow = 'var(--shadow)';
+      btn.style.borderColor = 'var(--color-border)';
+      btn.style.background = 'var(--color-surface)';
     });
 
     btn.addEventListener('click', async () => {
@@ -420,7 +458,7 @@ function createSelectionToolbar() {
         }
         const session = await LanguageModel.create({ outputLanguage: 'en' });
         const chunks = chunkText(selectedText, 3000);
-        const finalResult = await processContent(session, act, chunks, 'English');
+        const finalResult = await processContent(session, name, chunks, 'English');
         displayStudySparkResult(finalResult);
       } catch (err) {
         displayStudySparkResult(`❌ ${err?.message || String(err)}`);
@@ -439,11 +477,11 @@ function showToolbar() {
   createSelectionToolbar();
   const range = selection.getRangeAt(0);
   const rect = range.getBoundingClientRect();
-  const toolbarWidth = selectionToolbar.offsetWidth || 240;
-  const toolbarHeight = selectionToolbar.offsetHeight || 48;
+  const toolbarWidth = selectionToolbar.offsetWidth || 280;
+  const toolbarHeight = selectionToolbar.offsetHeight || 52;
 
-  let top = rect.top + window.scrollY - toolbarHeight - 10;
-  if (top < 0) top = rect.bottom + window.scrollY + 10;
+  let top = rect.top + window.scrollY - toolbarHeight - 12;
+  if (top < 0) top = rect.bottom + window.scrollY + 12;
   let left = rect.left + window.scrollX + rect.width / 2 - toolbarWidth / 2;
   if (left < 8) left = 8;
   if (left + toolbarWidth > window.innerWidth - 8) left = window.innerWidth - toolbarWidth - 8;
@@ -461,9 +499,15 @@ function hideToolbar() {
   }
 }
 
-document.addEventListener('mouseup', () => { setTimeout(() => window.getSelection().toString().trim() ? showToolbar() : hideToolbar(), 10); });
-document.addEventListener('mousedown', e => { if (selectionToolbar && !selectionToolbar.contains(e.target)) hideToolbar(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') hideToolbar(); });
+document.addEventListener('mouseup', () => { 
+  setTimeout(() => window.getSelection().toString().trim() ? showToolbar() : hideToolbar(), 10); 
+});
+document.addEventListener('mousedown', e => { 
+  if (selectionToolbar && !selectionToolbar.contains(e.target)) hideToolbar(); 
+});
+document.addEventListener('keydown', e => { 
+  if (e.key === 'Escape') hideToolbar(); 
+});
 
 
 // ---- PREMIUM RESPONSE POPUP WITH SMOOTH HIDE/SHOW + TYPING ----
