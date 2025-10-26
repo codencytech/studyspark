@@ -16,7 +16,6 @@ import Contact from "./pages/Contact";
 
 export default function App() {
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
     <Router>
       <Layout>
         <Routes>
@@ -35,6 +34,5 @@ export default function App() {
         </Routes>
       </Layout>
     </Router>
-    </BrowserRouter>
   );
 }
