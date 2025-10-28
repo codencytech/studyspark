@@ -508,6 +508,126 @@ body {
   50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
 }
 
+/* Action Buttons Container */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* Regenerate Container at bottom of AI message */
+.regenerate-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.regenerate-button {
+  padding: 10px 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  color: var(--color-text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.regenerate-button:hover {
+  background: linear-gradient(135deg, rgba(0, 212, 170, 0.1) 0%, rgba(0, 184, 148, 0.05) 100%);
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* Stop Button */
+.stop-button {
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.stop-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+}
+
+
+
+/* Edit Button in User Messages */
+.edit-button {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: var(--color-surface-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.edit-button:hover {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.edit-container {
+  width: 100%;
+}
+
+.edit-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  background: var(--color-surface-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  color: var(--color-text);
+  font-family: inherit;
+  resize: vertical;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.save-edit, .cancel-edit {
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.save-edit {
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+  color: var(--color-bg);
+}
+
+.cancel-edit {
+  background: var(--color-surface-light);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.save-edit:hover, .cancel-edit:hover {
+  transform: translateY(-1px);
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .ai-input-section {
