@@ -97,10 +97,10 @@ const Extension = () => {
                   <h3>Extract the ZIP File</h3>
                   <p>Unzip the downloaded file to a folder on your computer</p>
                   <div className="step-image">
-                    <img src="/images/extract-step.jpg" alt="Extract ZIP file" />
+                    <img src="./images/extract-step.jpg" alt="Extract ZIP file" />
                   </div>
                   <div className="step-image">
-                    <img src="/images/unzipit.jpg" alt="Extract ZIP file" />
+                    <img src="./images/unzipit.jpg" alt="Extract ZIP file" />
                   </div>
                 </div>
               </div>
@@ -110,7 +110,7 @@ const Extension = () => {
                   <h3>Open Chrome Extensions</h3>
                   <p>Navigate to <code>chrome://extensions/</code> in your Chrome browser</p>
                   <div className="step-image">
-                    <img src="/images/extensions-page.jpg" alt="Chrome extensions page" />
+                    <img src="./images/extensions-page.jpg" alt="Chrome extensions page" />
                   </div>
                 </div>
               </div>
@@ -120,7 +120,7 @@ const Extension = () => {
                   <h3>Enable Developer Mode</h3>
                   <p>Toggle the "Developer mode" switch in the top right corner</p>
                   <div className="step-image">
-                    <img src="/images/developer-mode.jpg" alt="Enable developer mode" />
+                    <img src="./images/developer-mode.jpg" alt="Enable developer mode" />
                   </div>
                 </div>
               </div>
@@ -130,10 +130,10 @@ const Extension = () => {
                   <h3>Load Unpacked Extension</h3>
                   <p>Click "Load unpacked" and select the extracted extension folder</p>
                   <div className="step-image">
-                    <img src="/images/load-unpacked.jpg" alt="Load unpacked extension" />
+                    <img src="./images/load-unpacked.jpg" alt="Load unpacked extension" />
                   </div>
                   <div className="step-image">
-                    <img src="/images/selectfolder.jpg" alt="Load unpacked extension" />
+                    <img src="./images/selectfolder.jpg" alt="Load unpacked extension" />
                   </div>
                 </div>
               </div>
@@ -143,7 +143,7 @@ const Extension = () => {
                   <h3>Start Using</h3>
                   <p>Pin the extension and click on any webpage to use AI features</p>
                   <div className="step-image">
-                    <img src="/images/using-extension.jpg" alt="Using the extension" />
+                    <img src="./images/using-extension.jpg" alt="Using the extension" />
                   </div>
                 </div>
               </div>
