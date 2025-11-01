@@ -62,15 +62,10 @@
       width: 52px;
       height: 52px;
       border-radius: var(--border-radius);
-      background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
       display: grid;
       place-items: center;
       box-shadow: var(--shadow-accent);
       flex: 0 0 52px;
-    }
-
-    .logo svg { 
-      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
     }
 
     .title {
@@ -237,16 +232,7 @@
   <div class="wrap" role="dialog" aria-labelledby="appTitle">
     <div class="header">
       <div class="logo">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-          <defs>
-            <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-              <stop offset="0" stop-color="#00d4aa"/>
-              <stop offset="1" stop-color="#00b894"/>
-            </linearGradient>
-          </defs>
-          <path d="M12 2L13.09 8.26L20 9L14.55 13.47L16.18 20L12 16.77L7.82 20L9.45 13.47L4 9L10.91 8.26L12 2Z" fill="url(#g)"/>
-          <path d="M12 2L13.09 8.26L20 9L14.55 13.47L16.18 20L12 16.77L7.82 20L9.45 13.47L4 9L10.91 8.26L12 2Z" stroke="#0a0a0a" stroke-width="0.5"/>
-        </svg>
+        <img src="icons/studysparklogo.png" alt="Extension Logo" width="28" height="28">
       </div>
       <div class="title">
         <div id="appTitle" class="main">StudySpark</div>
@@ -301,7 +287,7 @@
         </div>
         <div class="meta">
           <div class="label">Translate Text</div>
-          <div class="hint">Translate content to English</div>
+          <div class="hint">Translate content to any language</div>
         </div>
       </button>
 

@@ -72,7 +72,6 @@ const Extension = () => {
                 </button>
                 <div className="download-info">
                   <span className="version">v1.0.0</span>
-                  <span className="size">• 2.3 MB</span>
                 </div>
               </div>
             </div>

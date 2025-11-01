@@ -1,4 +1,15 @@
 // popup.js
+// Get target language from user
+async function getTargetLanguage() {
+  return new Promise((resolve) => {
+    const language = window.prompt(
+      "🌍 Enter target language for translation:\n\nExamples: Spanish, French, German, Japanese, Hindi, Arabic, etc.\n\nYou can write the language name in any way - AI will understand it!",
+      "Spanish"
+    );
+    resolve(language && language.trim() ? language.trim() : null);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const buttons = document.querySelectorAll("button[data-action]");
 
@@ -6,6 +17,22 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", async () => {
       const action = button.getAttribute("data-action");
       console.log("Popup: clicked action =", action);
+
+      // For TRANSLATE action, ask for target language first
+      let targetLang = null;
+      if (action === "TRANSLATE") {
+        try {
+          targetLang = await getTargetLanguage();
+          if (!targetLang) {
+            console.log("Translation cancelled - no language specified");
+            return;
+          }
+          console.log(`🌍 Translation target language: ${targetLang}`);
+        } catch (e) {
+          console.warn("Language prompt cancelled or failed:", e);
+          return;
+        }
+      }
 
       // Clear old result so no stale data shows
       chrome.storage.local.remove("studySparkResult", () => {
@@ -35,7 +62,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
           }
 
-          chrome.tabs.sendMessage(tab.id, { type: "RUN_ACTION", action }, (response) => {
+          chrome.tabs.sendMessage(tab.id, { 
+            type: "RUN_ACTION", 
+            action, 
+            targetLang // Include target language for translate
+          }, (response) => {
             clearTimeout(timeoutId);
             responded = true;
 

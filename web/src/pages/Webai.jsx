@@ -349,6 +349,26 @@ const Webai = () => {
                 </select>
               </div>
 
+              {/* Translation Help Message - Only shows when Translate is selected */}
+              {action === "TRANSLATE" && (
+                <div className="help-message translate-help">
+                  <div className="help-icon">💡</div>
+                  <div className="help-content">
+                    <strong>Translation Tips</strong>
+                    <p>Include the target language in your prompt:</p>
+                    <div className="help-examples">
+                      <span>"Translate this to Spanish: [your text]"</span>
+                      <span>"Convert this in French: [your text]"</span>
+                      <span>"Help me with this in German: [your text]"</span>
+                    </div>
+                    <p className="help-languages">
+                      Supported: Spanish, French, German, Italian, Portuguese, 
+                      Russian, Chinese, Japanese, Korean, Arabic, Hindi
+                    </p>
+                  </div>
+                </div>
+              )}
+
               <div className="action-buttons">
                 <button 
                   className="generate-button" 

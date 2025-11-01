@@ -90,6 +90,17 @@ async function safePrompt(session, promptText) {
   }
 }
 
+// Get target language from user
+async function getTargetLanguage() {
+  return new Promise((resolve) => {
+    const language = window.prompt(
+      "🌍 Enter target language for translation:\n\nExamples: Spanish, French, German, Japanese, Hindi, Arabic, etc.\n\nYou can write the language name in any way - AI will understand it!",
+      "Spanish"
+    );
+    resolve(language && language.trim() ? language.trim() : "English");
+  });
+}
+
 // ---- SIMPLE PROCESSING - NO DUPLICATES ----
 async function processSingleChunk(session, action, chunk, targetLang) {
   console.log("🔄 Processing single chunk...");
@@ -117,10 +128,11 @@ Use clear language and structure.
 
 Text: ${chunk}`,
 
-    TRANSLATE: `Translate this to ${targetLang}.
-Maintain original meaning.
+    TRANSLATE: `Translate this text to ${targetLang}. 
+Maintain the original meaning, tone, and context.
+Provide accurate and natural translation.
 
-Text: ${chunk}`,
+Text to translate: ${chunk}`,
 
     PROOFREAD: `Proofread and improve this text.
 Provide corrected version and changes list.
@@ -288,24 +300,29 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return;
       }
 
-      // Handle language selection
+      // Handle language selection for TRANSLATE action
       let targetLang = "English";
       if (request.action === "TRANSLATE") {
-        try {
-          const userLang = window.prompt("Enter target language code or name (e.g. en, es, ja) — default: en", "en");
-          if (userLang && userLang.trim()) {
-            const map = { en: "English", es: "Spanish", ja: "Japanese", hi: "Hindi", fr: "French" };
-            const k = userLang.trim().toLowerCase();
-            targetLang = map[k] || userLang.trim();
+        if (request.targetLang) {
+          targetLang = request.targetLang;
+          console.log(`🌍 Using provided target language: ${targetLang}`);
+        } else {
+          try {
+            targetLang = await getTargetLanguage();
+            if (!targetLang) {
+              sendResponse({ success: false, error: "Translation cancelled - no language specified" });
+              return;
+            }
+          } catch (e) {
+            console.warn("Language prompt cancelled or failed:", e);
+            sendResponse({ success: false, error: "Translation cancelled" });
+            return;
           }
-        } catch (e) {
-          targetLang = "English";
         }
       }
 
-      // Create session
-      const outputCode = (request.action === "TRANSLATE" ? (targetLang === "English" ? "en" : targetLang.substring(0, 2).toLowerCase()) : "en");
-      const session = await LanguageModel.create({ outputLanguage: outputCode });
+      // Create session - don't force output language for translate
+      const session = await LanguageModel.create({ outputLanguage: "en" });
 
       // Extract and process content
       const fullText = getCleanPageText();
@@ -449,16 +466,34 @@ function createSelectionToolbar() {
       const selectedText = window.getSelection().toString().trim();
       if (!selectedText) return;
       hideToolbar();
+
       try {
         await chrome.storage.local.remove("studySparkResult");
         displayStudySparkResult(`Processing selected text...`);
+
         if (typeof LanguageModel === "undefined") {
           displayStudySparkResult("❌ AI not available in this build.");
           return;
         }
-        const session = await LanguageModel.create({ outputLanguage: 'en' });
+
+        // For TRANSLATE action, ask for target language first
+        let targetLang = "English";
+        if (name === "TRANSLATE") {
+          try {
+            targetLang = await getTargetLanguage();
+            if (!targetLang) {
+              displayStudySparkResult("❌ Translation cancelled - no language specified");
+              return;
+            }
+          } catch (e) {
+            displayStudySparkResult("❌ Translation cancelled");
+            return;
+          }
+        }
+
+        const session = await LanguageModel.create({ outputLanguage: "en" });
         const chunks = chunkText(selectedText, 3000);
-        const finalResult = await processContent(session, name, chunks, 'English');
+        const finalResult = await processContent(session, name, chunks, targetLang);
         displayStudySparkResult(finalResult);
       } catch (err) {
         displayStudySparkResult(`❌ ${err?.message || String(err)}`);
@@ -499,14 +534,14 @@ function hideToolbar() {
   }
 }
 
-document.addEventListener('mouseup', () => { 
-  setTimeout(() => window.getSelection().toString().trim() ? showToolbar() : hideToolbar(), 10); 
+document.addEventListener('mouseup', () => {
+  setTimeout(() => window.getSelection().toString().trim() ? showToolbar() : hideToolbar(), 10);
 });
-document.addEventListener('mousedown', e => { 
-  if (selectionToolbar && !selectionToolbar.contains(e.target)) hideToolbar(); 
+document.addEventListener('mousedown', e => {
+  if (selectionToolbar && !selectionToolbar.contains(e.target)) hideToolbar();
 });
-document.addEventListener('keydown', e => { 
-  if (e.key === 'Escape') hideToolbar(); 
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') hideToolbar();
 });
 
 
